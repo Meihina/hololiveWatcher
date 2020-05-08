@@ -1,9 +1,13 @@
 <template>
     <div id="app" :style="{width:PageWidth}">
-      <navbar></navbar>
+    <navbar></navbar>
     <div :class="isPhone ? 'vtuber_list_phone' : 'vtuber_list'">
       <div v-for="(item , index) in vtuber_msg" :key="index" class="vtuber_card">
-        <a target="_blank" :href="'https://live.bilibili.com/' + vtuber_msg[index].room">
+        <!-- <a style='cursor:default' :target="isPhone ? '_blank' :　''" :href="isPhone ? 'https://live.bilibili.com/' + vtuber_msg[index].room : 'javascript:void(0);'"> -->
+        <el-tooltip class="item" effect="dark" :content="item.name + '的视频投稿'" placement="top-start">
+          <div @click="showTost(item.uid)" v-show="!isPhone" style='cursor:pointer' :style="{zIndex:Zindex2 - index}" class="video_btn"><i class="el-icon-more"></i></div>
+        </el-tooltip>
+        <a slot="reference" class="slot" target='_blank' :href="'https://live.bilibili.com/' + vtuber_msg[index].room">
           <div class="real_vtuber_card" :style="{zIndex:Zindex - index}">
             <div class="card_1">
               <img :src="vtuber_msg[index].face">
@@ -18,6 +22,10 @@
             <div v-show="!isPhone" class="living">最近在播&nbsp;&nbsp;</div>
             <div class="TV_icon"></div>
             <div class="TV_icon2"></div>
+
+            <div v-show="!isPhone" class="goLive">前往直播间</div>
+            <div v-show="!isPhone" class="goVideo">{{item.title}}</div>
+
             <div v-show="!isPhone" class="title">{{item.title}}</div>
             <div v-show="!isPhone" class="recent" :class="'item' + index">
               <img class="recent_img" src="">
@@ -25,12 +33,20 @@
           </div>
         </a>
       </div>
+
+      <transition name="fade">
+        <div class="videoList" v-show="isShowVideo && !isPhone">
+          <div @click="close()" style='cursor:pointer' class="close"><i class="el-icon-close"></i></div>
+          <router-view></router-view>
+        </div>
+      </transition>
+
     </div>
+
     </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import navbar from './components/navbar.vue'
 
 export default {
@@ -40,8 +56,10 @@ export default {
   },
   data(){
     return{
+      isShowVideo:false,
       isPhone: false,
       Zindex: 100,
+      Zindex2: 101,
       PageWidth: 0,
       ReqOver: 0,
       switchIndex: 0,
@@ -266,9 +284,11 @@ export default {
           this.$el.querySelector('.' + cal).querySelector('.recent_img').src = this.vtuber_msg[i].url
         }
       }
-    }
+    },
   },
   mounted(){
+    this.$router.push({path : '/holog'})
+
     // 请求api
     this.fetchTogetData()
 
@@ -300,13 +320,21 @@ export default {
     }
   },
   methods:{
+    close(){
+      this.isShowVideo = false
+      this.$router.push({path:'/holog'})
+    },
+    showTost(uid){
+      this.isShowVideo = true
+      this.$router.push({path:'/videoList' , query:{uid : uid}})
+    },
     fetchTogetData(){
       for(var i = 0;i < this.vtuber_id.length;i++){
         (function(index , obj){
           let url = 'https://cors.zme.ink/https://api.live.bilibili.com/room/v1/Room/get_info?id=' + obj.vtuber_id[index]
           obj.$axios.get(url).then((response) => {
             obj.isLiving_status(response.data.data , index , obj.vtuber_id[index])
-            console.log(response)
+            // console.log(response)
           })
         })(i , this)
       }
@@ -323,6 +351,7 @@ export default {
       this.vtuber_msg[index].room = roomNum
       this.vtuber_msg[index].title = data.title
       this.vtuber_msg[index].url = 'https://images.weserv.nl/?url=' + data.keyframe
+      this.vtuber_msg[index].uid = data.uid
       this.ReqOver++
     }
   }
@@ -330,13 +359,30 @@ export default {
 </script>
 
 
-<style>
+<style lang="scss">
 body{
   margin: 0;
   padding: 0;
 }
 </style>
 <style scoped lang="scss">
+.fade-enter-active{
+  transition: opacity .5s;
+  transform: translate(-50% , -40%);
+}
+.fade-leave-active{
+  transition: opacity .5s;
+  transform: translate(-50% , -50%);
+}
+.fade-enter{
+  opacity: 0;
+  transform: translate(-50% , -50%);
+}
+.fade-leave-to{
+  opacity: 0;
+  transform: translate(-50% , -40%);
+}
+
 html , #app{
   overflow-x: hidden;
   overflow-y: hidden;
@@ -346,7 +392,6 @@ html , #app{
 body{
   overflow: hidden;
 }
-
 
 // PC网页样式
 .vtuber_list{
@@ -359,6 +404,33 @@ body{
   height: 2200px;
   width: 100%;
   margin: 0 0 55px;
+  .videoList{
+    box-shadow: 0px 5px 5px rgb(223, 223, 223);
+    z-index: 100000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 500px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 1);
+    .close{
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      background-color: rgb(250, 250, 250);
+      border-radius: 30px;
+      right: 10px;
+      top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover{
+        background-color: rgb(231, 231, 231);
+      }
+    }
+  }
   .vtuber_card{
     width: 30%;
     height: 150px;
@@ -368,6 +440,22 @@ body{
     background-color:rgb(255, 255, 255);
     color: rgb(36, 35, 35);
     position: relative;
+    .video_btn{
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      right: 5px;
+      top: 5px;
+      background-color: rgb(250, 250, 250);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 30px;
+      transition: 0.2s;
+      &:hover{
+        background-color: rgb(231, 231, 231);
+      }
+    }
     .real_vtuber_card{
       width: 100%;
       height: 150px;
@@ -385,12 +473,11 @@ body{
       }
       .title{
         position: absolute;
-        top: 190px;
+        top: 185px;
         left: 10%;
         width: 80%;
         color: rgb(199, 194, 194);
-        font-size: 12px;
-        // width: 50%;
+        font-size: 16px;
       }
       .TV_icon{
         position: absolute;
@@ -421,7 +508,8 @@ body{
       }
 
       &:hover{
-        height: 450px;
+        height: 0;
+        padding-bottom: 105%;
         position: absolute;
         box-shadow: 1px 1px 10px #cfcdcd;
         z-index: 100;
@@ -441,8 +529,9 @@ body{
 
       .isLive{
         position: relative;
-        height: 15%;
-        width: 24%;
+        height: 20px;
+        // padding-bottom: 25%;
+        width: 25%;
         border-radius: 20px;
         border: 1.2px solid rgb(233, 121, 139);
         top: 25%;
@@ -452,16 +541,17 @@ body{
         align-items: center;
         .circle{
           position: absolute;
-          left: -1%;
-          width: 25%;
-          height: 110%;
+          left: 0;
+          width: 20px;
+          height: 0;
+          padding-bottom: 20px;
           background-color: rgb(233, 121, 139);
-          clip-path: circle(35% at 50% 50%);
+          clip-path: circle(38% at 50% 50%);
         }
         .isLive_text{
           position: absolute;
           left: 35%;
-          font-size: 0.2vw;
+          font-size: 12px;
           color: rgb(233, 121, 139);
         }
         .no_open{
@@ -551,8 +641,8 @@ body{
       }
       .isLive{
         position: relative;
-        height: 15%;
-        width: 24%;
+        height: 18px;
+        width: 25%;
         border-radius: 20px;
         border: 1.2px solid rgb(233, 121, 139);
         top: 23%;
@@ -562,9 +652,9 @@ body{
         align-items: center;
         .circle{
           position: absolute;
-          left: -2%;
-          width: 26%;
-          height: 100%;
+          left: 0;
+          width: 18px;
+          height: 18px;
           background-color: rgb(233, 121, 139);
           clip-path: circle(35% at 50% 50%);
         }

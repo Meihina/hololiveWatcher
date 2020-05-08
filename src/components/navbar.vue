@@ -35,12 +35,6 @@ export default {
             }
         }
     },
-    watch:{
-
-    },
-    methods: {
-
-    }
   }
 </script>
 
