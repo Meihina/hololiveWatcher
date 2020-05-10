@@ -1,29 +1,10 @@
 # holo
+用于概览并监听hololive在bilibili的直播转播的网页   
+vueJS + bilibiliAPI
+[地址](http://meihina.gitee.io/holog/)
 
-## Project setup
-```
-npm install
-```
+4/30更新
+添加查看主播视频投稿的功能
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+5/10更新
+修复路由BUG
