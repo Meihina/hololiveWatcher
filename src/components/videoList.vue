@@ -29,23 +29,14 @@ export default {
         currentPage: 1,
         count: 0,
         loading: true,
-
         toShowList:[]
       }
     },
     // length
     mounted(){
       let that = this
-      fetch("http://59.110.64.37:8080/Get_userPage", {
-          method: "POST",
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body:JSON.stringify({
-              'userID' : that.$route.query.uid,
-              'page' : 1,
-              'pagesize' : 6
-          })
+      fetch(`https://happycl.kaza.workers.dev/https://space.bilibili.com/ajax/member/getSubmitVideos?mid=${that.$route.query.uid}&pagesize=6&tid=0&page=1`, {
+          method: "GET"
       }).then(function(response) {
           response.json().then((data) => {
             that.toShowList = data.data.vlist
@@ -60,20 +51,13 @@ export default {
         window.open(url)
       },
       handleSizeChange(val) {
+        console.log(val)
       },
       handleCurrentChange(val) {
         let that = this
         this.loading = true
-        fetch("http://59.110.64.37:8080/Get_userPage", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body:JSON.stringify({
-                'userID' : that.$route.query.uid,
-                'page' : val,
-                'pagesize' : 6
-            })
+        fetch(`https://happycl.kaza.workers.dev/https://space.bilibili.com/ajax/member/getSubmitVideos?mid=${that.$route.query.uid}&pagesize=6&tid=0&page=${val}`, {
+            method: "GET"
         }).then(function(response) {
             response.json().then((data) => {
               that.toShowList = data.data.vlist

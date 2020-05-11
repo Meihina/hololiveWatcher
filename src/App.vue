@@ -65,7 +65,8 @@ export default {
       switchIndex: 0,
       vtuber_id:['21584153','21132965','21144047','13946381','8899503','14917277','11588230','190577','21560356','21129632'
       ,'21752681','21545232','21133979','21130785','21107534','4664126','21219990','14275133','21131813','21420932'
-      ,'21421141','21267062','21572617','21752694','21752686','21583736','21752719','21752710'],
+      ,'21421141','21267062','21572617','21752694','21752686','21583736','21752719','21752710','21618138','21641569',
+      '21618129','21908196','21908209','21908222'],
       vtuber_msg: null
     }
   },
@@ -140,7 +141,7 @@ export default {
     fetchTogetData(){
       for(var i = 0;i < this.vtuber_id.length;i++){
         (function(index , obj){
-          let url = 'https://cors.zme.ink/https://api.live.bilibili.com/room/v1/Room/get_info?id=' + obj.vtuber_id[index]
+          let url = 'https://happycl.kaza.workers.dev/https://api.live.bilibili.com/room/v1/Room/get_info?id=' + obj.vtuber_id[index]
           obj.$axios.get(url).then((response) => {
             obj.isLiving_status(response.data.data , index , obj.vtuber_id[index])
             // console.log(response)
@@ -210,7 +211,7 @@ body{
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  height: 2200px;
+  height: 2500px;
   width: 100%;
   margin: 0 0 55px;
   .videoList{
@@ -410,7 +411,7 @@ body{
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  height: 3200px;
+  height: 4000px;
   margin: 0 0 55px;
   .vtuber_card{
     width: 90vw;

@@ -201,6 +201,48 @@ export default new Vuex.Store({
       title:'',
       face: require('../assets/face/cyoan.jpg'),
       url: ''
+    },{
+      name:'希薇娅',
+      isLiving:'未开播',
+      sign:'想要成为你睁开眼时最钟情的那抹阳光 ❀Hololive China一期生',
+      title:'',
+      face: require('../assets/face/civia.png'),
+      url: ''
+    },{
+      name:'黑桃影',
+      isLiving:'未开播',
+      sign:'hololive CN所属，星空下的白色幻影，怪盗Spade Echo参上！',
+      title:'',
+      face: require('../assets/face/hty.png'),
+      url: ''
+    },{
+      name:'夜霧',
+      isLiving:'未开播',
+      sign:'吸猫BOT＊HOLOLIVE CHINA一期生YOGIRI',
+      title:'',
+      face: require('../assets/face/yogiri.png'),
+      url: ''
+    },{
+      name:'阿媂娅',
+      isLiving:'未开播',
+      sign:'Hololive CN二期生 普通的冰元素使。寒冰一笑如魇花，冰封千年只为你 。',
+      title:'',
+      face: require('../assets/face/artia.png'),
+      url: ''
+    },{
+      name:'朵莉丝',
+      isLiving:'未开播',
+      sign:'Hololive CN二期生 朝向下一道光辉横渡大海吧！ ——来自深海中的人鱼公主～',
+      title:'',
+      face: require('../assets/face/Doris.png'),
+      url: ''
+    },{
+      name:'罗莎琳',
+      isLiving:'未开播',
+      sign:'Hololive CN二期生 来自异世界的图书管理员，来一起探索这个世界吧！',
+      title:'',
+      face: require('../assets/face/rosalyn.png'),
+      url: ''
     }
   ]
   },
