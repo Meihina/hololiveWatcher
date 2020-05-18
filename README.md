@@ -15,7 +15,7 @@
     |-----|-------|----|----|
     | header | | true|'Content-Type': 'application/json'|
     | vtbID | string/number|true |用户直播间id|
-* /livingRoom
+* /getVideo 
     | 参数 | 类型 |必填|说明|
     |-----|-------|----|----|
     | header | | true|'Content-Type': 'application/json'|
