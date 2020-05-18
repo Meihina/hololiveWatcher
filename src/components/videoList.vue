@@ -34,15 +34,10 @@ export default {
     },
     // length
     mounted(){
-      let that = this
-      fetch(`https://happycl.kaza.workers.dev/https://space.bilibili.com/ajax/member/getSubmitVideos?mid=${that.$route.query.uid}&pagesize=6&tid=0&page=1`, {
-          method: "GET"
-      }).then(function(response) {
-          response.json().then((data) => {
-            that.toShowList = data.data.vlist
-            that.count = data.data.count
-            that.loading = false
-          })
+      this.req(this.$route.query.uid , 1 , 6).then((data) => {
+        this.toShowList = data.data.vlist
+        this.count = data.data.count
+        this.loading = false
       })
     },
     methods: {
@@ -54,14 +49,33 @@ export default {
         console.log(val)
       },
       handleCurrentChange(val) {
-        let that = this
-        this.loading = true
-        fetch(`https://happycl.kaza.workers.dev/https://space.bilibili.com/ajax/member/getSubmitVideos?mid=${that.$route.query.uid}&pagesize=6&tid=0&page=${val}`, {
-            method: "GET"
+        this.req(this.$route.query.uid , val , 6).then((data) => {
+          this.toShowList = data.data.vlist
+          this.loading = false
+        })
+      },
+      req(userID , page , pagesize){
+        return fetch("http://hololive_api.kaza.ink/getVideo", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'userID' : userID,
+                'page' : page,
+                'pagesize' : pagesize
+            })
         }).then(function(response) {
-            response.json().then((data) => {
-              that.toShowList = data.data.vlist
-              that.loading = false
+            return response.json().then((data) => {
+                return new Promise((resolve, reject) => {
+                  if(data){
+                    console.log(data)
+                    resolve(data)
+                  }else{
+                    console.log('There is something wrong with api.')
+                    reject(error)
+                  }
+                })
             })
         })
       }

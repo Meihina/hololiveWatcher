@@ -95,14 +95,14 @@ export default {
       }
     },
     $route(to , from){
-      if(to.path === '/holog' || to.path === '/holog/'){
+      if(to.path === '/holog'){
         this.isShowVideo = false
       }
     }
   },
   mounted(){
     this.vtuber_msg = this.$store.state.vtuber_msg
-    this.$router.push({path : '/holog/'})
+    this.$router.push({path : '/holog'})
 
     // 请求api
     this.fetchTogetData()
@@ -149,9 +149,18 @@ export default {
     fetchTogetData(){
       for(var i = 0;i < this.vtuber_id.length;i++){
         (function(index , obj){
-          let url = 'https://happycl.kaza.workers.dev/https://api.live.bilibili.com/room/v1/Room/get_info?id=' + obj.vtuber_id[index]
-          obj.$axios.get(url).then((response) => {
-            obj.isLiving_status(response.data.data , index , obj.vtuber_id[index])
+          fetch("http://hololive_api.kaza.ink/livingRoom", {
+              method: "POST",
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body:JSON.stringify({
+                  'vtbID' : obj.vtuber_id[index],
+              })
+          }).then(function(response) {
+              response.json().then((response) => {
+                  obj.isLiving_status(response.data , index , obj.vtuber_id[index])
+              })
           })
         })(i , this)
       }
@@ -318,10 +327,11 @@ html , #app{
           position: absolute;
           left: 0;
           width: 20px;
-          height: 0;
-          padding-bottom: 20px;
+          height: 20px;
+          border-radius: 20px;
+          box-sizing: border-box;
+          border: white 2px solid;
           background-color: rgb(233, 121, 139);
-          clip-path: circle(38% at 50% 50%);
         }
         .isLive_text{
           position: absolute;
@@ -389,6 +399,7 @@ html , #app{
         @extend .TV_icon;
         background-color: rgb(233, 121, 139);
         clip-path: polygon(40% 25%, 40% 75%, 70% 50%);
+        -webkit-clip-path: polygon(40% 25%, 40% 75%, 70% 50%);
       }
 
       .recent{
@@ -444,6 +455,7 @@ html , #app{
         left: 5%;
         top: 20%;
         clip-path: circle(50% at 50% 50%);
+        -webkit-clip-path: circle(50% at 50% 50%);
       }
       .vt_name{
         position: absolute;
@@ -477,8 +489,10 @@ html , #app{
           left: 0;
           width: 18px;
           height: 18px;
+          border-radius: 20px;
+          box-sizing: border-box;
+          border: white 2px solid;
           background-color: rgb(233, 121, 139);
-          clip-path: circle(35% at 50% 50%);
         }
         .isLive_text{
           position: absolute;
